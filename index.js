@@ -2,7 +2,7 @@
 
 var serialport = require('serialport')
   , Promise = require('bluebird')
-  , VError = require('VError')
+  , VError = require('verror')
   , conn = null
   , assert = require('assert')
   , fhlog = require('fhlog')
