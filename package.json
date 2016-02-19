@@ -1,0 +1,32 @@
+{
+  "name": "obd-parser-serial-connection",
+  "version": "0.1.0",
+  "description": "A serial connection wrapper for use with odb-parser",
+  "main": "index.js",
+  "scripts": {
+    "test": "env NODE_PATH=. mocha ./test"
+  },
+  "keywords": [
+    "obd",
+    "serial",
+    "connection",
+    "obd2",
+    "obdii",
+    "serialport"
+  ],
+  "author": "Evan Shortiss",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^3.3.1",
+    "fhlog": "^0.12.1",
+    "serialport": "^2.0.6",
+    "verror": "^1.6.1",
+    "xtend": "^4.0.1"
+  },
+  "devDependencies": {
+    "chai": "3.5.0",
+    "chai-as-promised": "^5.2.0",
+    "mocha": "2.3.0",
+    "proxyquire": "^1.7.4"
+  }
+}
