@@ -46,7 +46,9 @@ function configureFunction (connection) {
 }
 ```
 
-## Changelog
+## CHANGELOG
 
-0.1.0 - Initial release
+* 0.1.1 - Patch for serialport 2.1.X changes in autoconnect
+
+* 0.1.0 - Initial release
 
