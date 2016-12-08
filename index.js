@@ -67,7 +67,9 @@ module.exports = function (opts) {
         conn = new serialport.SerialPort(opts.serialPath, opts.serialOpts);
 
         // Connect to the serial port
-        conn.open(onConnectionOpened.bind(null, configureFn));
+        conn.on('open', function () {
+          onConnectionOpened(configureFn);
+        });
       }
     });
   };
