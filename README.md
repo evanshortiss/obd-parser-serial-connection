@@ -48,6 +48,9 @@ function configureFunction (connection) {
 
 ## CHANGELOG
 
+* 0.1.2 - Ensure errors result in Promise rejection. Use _debug_ instead of
+_fhlog_.
+
 * 0.1.1 - Patch for serialport 2.1.X changes in autoconnect
 
 * 0.1.0 - Initial release
