@@ -21,13 +21,13 @@ describe('obd-serial-connection', function () {
           function SerialPort () {
             EventEmitter.call(this);
 
-            this.open = function (done) {
+            setTimeout((function () {
               if (err) {
-                done(new Error('fake error'), null);
+                this.emit('error', new Error('fake error'));
               } else {
-                done(null, {});
+                this.emit('open');
               }
-            }
+            }).bind(this));
           }
           util.inherits(SerialPort, EventEmitter);
 

@@ -5,8 +5,7 @@ var serialport = require('serialport')
   , VError = require('verror')
   , conn = null
   , assert = require('assert')
-  , fhlog = require('fhlog')
-  , log = fhlog.get('[obd-serial-connection]');
+  , debug = require('debug')(require('./package.json').name);
 
 
 // Keep track of connection requests
@@ -49,13 +48,13 @@ module.exports = function (opts) {
     );
 
     return new Promise(function (resolve, reject) {
-      log.d('creating serialport connection');
+      debug('creating serialport connection');
 
       if (conn && conn.ready) {
-        log.d('returning existing connection instance');
+        debug('returning existing connection instance');
         resolve(conn);
       } else {
-        log.d('opening a serial connection');
+        debug('opening a serial connection');
 
         // Keep track of the promise(s) we're returning
         connQ.push({
@@ -70,25 +69,14 @@ module.exports = function (opts) {
         conn.on('open', function () {
           onConnectionOpened(configureFn);
         });
+
+        conn.on('error', function (err) {
+          onConnectionOpened(configureFn, err);
+        });
       }
     });
   };
 };
-
-
-/**
- * Logger instance used by the applicaton
- * @type {fhlog.Logger}
- */
-module.exports.logger = log;
-
-
-/**
- * The fhlog module instance used by this module
- * @type {Object}
- */
-module.exports.fhlog = fhlog;
-
 
 /**
  * Parses serial data and emits and event related to the PID of the data.
@@ -96,7 +84,7 @@ module.exports.fhlog = fhlog;
  * @param {String} str
  */
 function onSerialData (str) {
-  log.d('received obd data %s', str);
+  debug('received obd data %s', str);
 }
 
 
@@ -121,8 +109,8 @@ function respondToConnectionRequests (err) {
  * @param  {Erorr} err
  */
 function onSerialError (err) {
-  log.e('serial emitted an error %s', err.toString());
-  log.e(err.stack);
+  debug('serial emitted an error %s', err.toString());
+  debug(err.stack);
 }
 
 
@@ -138,11 +126,11 @@ function onConnectionOpened (configureFn, err) {
   if (err) {
     err = new VError(err, 'failed to connect to ecu');
 
-    log.e('error establishing a serial connection: %s', err);
+    debug('error establishing a serial connection: %s', err);
 
     respondToConnectionRequests(err);
   } else {
-    log.d('serial connection established, running configuration function');
+    debug('serial connection established, running configuration function');
 
     // Bind listeners for data and errors
     conn.on('error', onSerialError);
@@ -150,7 +138,7 @@ function onConnectionOpened (configureFn, err) {
 
     return configureFn(conn)
       .then(function onConfigurationComplete () {
-        log.i('finished running configuration function, returning connection');
+        debug('finished running configuration function, returning connection');
 
         conn.ready = true;
 
