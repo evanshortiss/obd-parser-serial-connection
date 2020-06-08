@@ -1,11 +1,10 @@
 'use strict';
 
-var serialport = require('serialport')
-  , Promise = require('bluebird')
-  , VError = require('verror')
-  , conn = null
-  , assert = require('assert')
-  , debug = require('debug')(require('./package.json').name);
+const SerialPort = require('serialport')
+const VError = require('verror')
+const assert = require('assert')
+const debug = require('debug')(require('./package.json').name);
+let conn = null
 
 
 // Keep track of connection requests
@@ -63,7 +62,7 @@ module.exports = function (opts) {
         });
 
         // Create our connection
-        conn = new serialport.SerialPort(opts.serialPath, opts.serialOpts);
+        conn = new SerialPort(opts.serialPath, opts.serialOpts);
 
         // Connect to the serial port
         conn.on('open', function () {

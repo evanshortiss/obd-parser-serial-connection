@@ -15,26 +15,22 @@ describe('obd-serial-connection', function () {
 
   function getDummyCon (err) {
     return proxyquire('index.js', {
-      serialport: {
-        SerialPort: (function () {
+      serialport: (function () {
+        function SerialPort () {
+          EventEmitter.call(this);
 
-          function SerialPort () {
-            EventEmitter.call(this);
+          setTimeout((function () {
+            if (err) {
+              this.emit('error', new Error('fake error'));
+            } else {
+              this.emit('open');
+            }
+          }).bind(this));
+        }
+        util.inherits(SerialPort, EventEmitter);
 
-            setTimeout((function () {
-              if (err) {
-                this.emit('error', new Error('fake error'));
-              } else {
-                this.emit('open');
-              }
-            }).bind(this));
-          }
-          util.inherits(SerialPort, EventEmitter);
-
-          return SerialPort;
-
-        })()
-      }
+        return SerialPort
+      })()
     });
   }
 
@@ -43,23 +39,20 @@ describe('obd-serial-connection', function () {
     con = require('index.js');
   });
 
-  it('should export logger variables', function () {
-    expect(con.logger).to.be.defined;
-    expect(con.fhlog).to.be.defined;
-  });
-
   it('should export a function', function () {
     expect(con).to.be.a('function');
   });
 
-  it('should throw an assertion error', function () {
-    expect(con.bind(con)).to.throw('AssertionError');
+  it('should throw an assertion error (opts.serialPath missing)', function () {
+    expect(() => {
+      con({})
+    }).to.throw('opts.serialPath should be a string provided to obd-serial-connection');
   });
 
-  it('should throw an assertion error', function () {
+  it('should throw an assertion error (opts.serialOpts missing)', function () {
     expect(con.bind(con, {
       serialPath: 'dev/some-path',
-    })).to.throw('AssertionError');
+    })).to.throw('opts.serialOpts should be an Object provided to obd-serial-connection');
   });
 
   it('should return a function', function () {
